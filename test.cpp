@@ -35,8 +35,8 @@ COMPLEX_OPS(/ )
 extern "C"
 {
     void connect();
-    void fourir( double* input_data,int size);
-    void fft( int* x, complex<double>* X, unsigned int N);
+    void fourir( int* input_data,int size);
+    void fft( int* x ,unsigned int N);
     void fft_process( int* x,complex<double>* X, unsigned int N, unsigned int s);
 }
 void connect()
@@ -44,18 +44,16 @@ void connect()
     printf("connect\n");
 }
 
-void fourir(double* input_data,int size)
+void fourir(int* input_data,int size)
 {
-    if (input_data[0]==1)
-        cout<<"right"<<endl;
     const int s=size;
     double real[s];
     double imag[s];
-    for (int k = 0; k < 10; k++)
+    for (int k = 0; k < size; k++)
     {
         double re= 0;
         double im = 0;
-        for (int n = 0; n < 10; n++)
+        for (int n = 0; n < size; n++)
         {
             double t = double(n) / 10;
             double W = 2 * M_PI * k;
@@ -64,19 +62,29 @@ void fourir(double* input_data,int size)
             //cout << endl << re << "    " << im << endl;
             
         }
-        cout << endl << re << "    " << im << "   " <<k<<endl;
         real[k] = re;
-        imag[k] = im/10;
+        imag[k] = im;
+        //cout << endl <<input_data[k] <<"  "<<k<<endl;
+        //cout << endl <<real[k] <<"  "<<imag[k]<<endl;
     }
     
 }
-void fft( int* x, complex<double>* X, unsigned int N)
+void fft( int* x,unsigned int N)
 {
+    const int size = N; 
+    //double real_part[size];
+    //double im_part[size];
+    complex<double> X[size];   
     fft_process( x, X, N, 1);
+   /* for(int i=0;i<N;i++)
+    {
+        real_part[i]=real(X[i]);
+        im_part[i]=imag(X[i]);
+    }*/
 }
 void fft_process( int* x,complex<double>* X, unsigned int N, unsigned int s) {
     unsigned int k;
-    complex<double> t;
+    complex<double>temp;
     complex<double> J(0, 1);
     if (N == 1) {
         X[0] = x[0];
@@ -87,8 +95,8 @@ void fft_process( int* x,complex<double>* X, unsigned int N, unsigned int s) {
     fft_process(x + s, X + N / 2, N / 2, 2 * s);
 
     for (k = 0; k < N / 2; k++) {
-        t = X[k];
-        X[k] = t + exp(-2 * M_PI  *J* k / N) * X[k + N / 2];
-        X[k + N / 2] = t - exp(-2 * M_PI * J * k / N) * X[k + N / 2];
+       temp = X[k];
+        X[k] =temp + exp(-2 * M_PI  *J* k / N) * X[k + N / 2];
+        X[k + N / 2] =temp - exp(-2 * M_PI * J * k / N) * X[k + N / 2];
     }
 }
