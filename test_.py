@@ -12,8 +12,8 @@ fourir= library.fourir
 fft=library.fft
 fft.restype=None
 fourir.restype = None
-fourir.argtypes= [ndpointer(ctypes.c_int32),c_int32]
-fft.argtypes= [ndpointer(ctypes.c_int32),c_int32]
+fourir.argtypes= [ndpointer(ctypes.c_int32),ndpointer(ctypes.c_double),ndpointer(ctypes.c_double),c_int32]
+fft.argtypes= [ndpointer(ctypes.c_int32),ndpointer(ctypes.c_double),ndpointer(ctypes.c_double),c_int32]
 
 
 arr_sizes =np.array([2**0],dtype=c_int32)
@@ -24,25 +24,41 @@ fourir_slow_time =np.array(0)
 fft_time =np.array(0)
 
 
-for i in range(0,15):
-    a=np.random.randint(0,10, size=(arr_sizes[i]),dtype=c_int32)
-    size =arr_sizes[i]
+#for i in range(0,15):
+#    a=np.random.randint(0,10, size=(arr_sizes[i]),dtype=c_int32)
+#    size =arr_sizes[i]
 
-    time1 =time.time()
-    fourir(a,size)
-    time2=time.time()
-    time3 = (time2 - time1)
-    fourir_slow_time=np.append(fourir_slow_time,time3)
+   # time1 =time.time()
+    #fourir(a,size)
+    #time2=time.time()
+    #time3 = (time2 - time1)
+    #fourir_slow_time=np.append(fourir_slow_time,time3)
     
-    time11 =time.time()
-    fft(a,size)
-    time22 =time.time()
-    time33=time22-time11
-    fft_time=np.append(fft_time,time33)
+#    time11 =time.time()
+#    fft(a,size)
+#    time22 =time.time()
+#    time33=time22-time11
+#    fft_time=np.append(fft_time,time33)
 
 #print(fft_time)
 #print(fourir_slow_time)
-plt.plot(arr_sizes, fourir_slow_time)
+#plt.plot(arr_sizes, fourir_slow_time)
 #plt.show()
-plt.plot(arr_sizes, fft_time)
+#plt.plot(arr_sizes, fft_time)
+#plt.show()
+a=np.random.randint(0,10, size=(2**5),dtype=c_int32)
+
+out_real =np.ones(2**5,dtype=c_double)
+out_im =np.ones(2**5,dtype=c_double)
+fourir(a,out_real,out_im,2**5)
+print (out_real)
+print(out_im)
+
+outfft_real =np.ones(2**5,dtype=c_double)
+outfft_im =np.ones(2**5,dtype=c_double)
+fft(a,outfft_real,outfft_im,2**5)
+print(outfft_real)
+print(outfft_im)
+plt.plot(out_real,out_im)
+plt.plot(outfft_real,outfft_im)
 plt.show()

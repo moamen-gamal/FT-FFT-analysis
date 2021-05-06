@@ -35,16 +35,16 @@ COMPLEX_OPS(/ )
 extern "C"
 {
     void connect();
-    void fourir( int* input_data,int size);
-    void fft( int* x ,unsigned int N);
-    void fft_process( int* x,complex<double>* X, unsigned int N, unsigned int s);
+    void fourir( int* input_data,double* out_real,double* out_im,int size);
+    void fft( int* x ,double* out_real,double* out_im,int N);
+    void fft_process( int* x,complex<double>* X, int N, unsigned int s);
 }
 void connect()
 {
     printf("connect\n");
 }
 
-void fourir(int* input_data,int size)
+void fourir(int* input_data,double* out_real,double* out_im,int size)
 {
     const int s=size;
     double real[s];
@@ -64,25 +64,27 @@ void fourir(int* input_data,int size)
         }
         real[k] = re;
         imag[k] = im;
+        out_real[k]=re;
+        out_im[k]=im;
         //cout << endl <<input_data[k] <<"  "<<k<<endl;
         //cout << endl <<real[k] <<"  "<<imag[k]<<endl;
     }
     
 }
-void fft( int* x,unsigned int N)
+void fft( int* x,double* out_real,double* out_im,int N)
 {
     const int size = N; 
     //double real_part[size];
     //double im_part[size];
-    complex<double> X[size];   
+    complex<double>*X = new complex<double>[size];    
     fft_process( x, X, N, 1);
-   /* for(int i=0;i<N;i++)
+    for(int i=0;i<N;i++)
     {
-        real_part[i]=real(X[i]);
-        im_part[i]=imag(X[i]);
-    }*/
+        out_real[i]=real(X[i]);
+        out_im[i]=imag(X[i]);
+    }
 }
-void fft_process( int* x,complex<double>* X, unsigned int N, unsigned int s) {
+void fft_process( int* x,complex<double>* X, int N, unsigned int s) {
     unsigned int k;
     complex<double>temp;
     complex<double> J(0, 1);
